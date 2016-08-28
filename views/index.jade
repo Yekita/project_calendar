@@ -1,5 +1,104 @@
-extends layout
+doctype html
+html.
+  <head>
+  <title>My Calendar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="/stylesheets/calendarStyle.css">
+  <script src="/javascripts/angular.min.js"></script>
+  <script src="/javascripts/view.js"></script>
+  </head>
+  <body ng-app="mainApp" ng-controller="ViewCtr" >
+    <div class="wrapper" >
+      <div class="section_one">
+        <button id="myBtnAdd" class="myBtnAdd" ng-click="addMyModal()">Task</button>
+        <div class="analysis">
+          <button id="myBtnView" class="myBtnView" >Analysis</button>
+          <div class="analysis-content">
+            <a href="#"> Self: {{ result[0] }} % </a>
+            <a href="#"> Family: {{ result[1] }} % </a>
+            <a href="#"> Work: {{ result[2] }} % </a>
+            <a href="#"> Social: {{ result[3] }} % </a>
+            <a href="#"> Other: {{ result[4] }} % </a>
+          </div>
+        </div>
+      </div>
+    <div id="mainCalendar" class="mainCalendar">
+      <header >
+        <div class="yearDiv">
+          <button class="button prevYearLeft" ng-click="prevYearView()"><</button>
+          <h3 id="year_name" class="yearName" > {{ itrYear }} </h3>
+          <button class="button nextYearRight" ng-click="nextYearView()">></button>
+          </div>
+        <div class="monthDiv">
+          <button class="button prevMonthLeft" ng-click="prevMonthView()"><</button>
+          <h3 id="month_name" class="monthName"> {{ monthName | uppercase }} </h3>
+          <button class="button nextMonthRight" ng-click="nextMonthView()">></button><Br>
+          </div>
+      </header>
 
-block content
-  h1= title
-  p Welcome to #{title}
+      <table id="tableCal" style="cursor: pointer; " ng-mouseover="showDateInfo()" class="tableCal">
+        <thead>
+        <tr>
+          <td>SUN</td>
+          <td>MON</td>
+          <td>TUE</td>
+          <td>WED</td>
+          <td>THU</td>
+          <td>FRI</td>
+          <td>SAT</td>
+          </tr>
+        </thead>
+        <tbody ng-bind-html="new_html"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="showModal" ng-app="mainApp" ng-controller="taskCtr" >
+    <!-- The Modal --!>
+    <div id="myModal" class="modal" >
+      <!-- Modal content --!>
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="close">&times</span>
+          <h2>Things to do on this day</h2>
+        </div>
+        <div class="container">
+          <form>
+            <div class="selection">
+              <div class="boxOne">
+                <input type="date" id="dateTask" class="taskDate" ng-model="newTaskDate"> 
+                <label for="dateTask" > </label>
+              </div>
+
+              <div class="boxTwo">
+                <select id="category" class="taskCategory" ng-model="newTaskCategory" ng-options="obj.name for obj in categories">
+                  <option class="disabled" value="">Choose task category</option>
+                </select>
+                <label for="category"> </label>
+              </div>
+            </div>
+
+            <div class="taskListDescription">
+              <input type="text" id="description" class="taskName" placeholder="What do you need to do?" ng-model="newTask">
+              <label for="description"> </label>
+            </div>
+
+            <div class="actionButtons">
+              <div class="addTask">
+                <button class="taskAdd" ng-click="addNew()">Add Task</button>
+              </div>
+            <div class="deleteTask">
+              <button class="taskDelete" ng-click="deleteTask()">Delete Task</button>
+            </div>
+          </form>
+
+          <ul  class="taskList">
+            <li class="taskItem" ng-repeat="taskItem in taskItem track by $index" ng-model="taskItem">
+            <input type="checkbox" class="taskCheckbox" ng-model="taskItem.complete" ng-change="save()">
+            <span class="complete-{{taskItem.complete}}">{{taskItem.description}}</span> <span class="category-{{taskItem.category}}">{{taskItem.category}}</span> <strong class="taskDate complete-{{taskItem.complete}}"><i class="fa fa-calendar"></i>{{taskItem.date | date : 'mediumDate'}}</strong> </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  </body>
